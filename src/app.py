@@ -1,40 +1,68 @@
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+app = Dash(
+    external_stylesheets=[dbc.themes.FLATLY]
+)
 
 
 # Layout
 app.layout = html.Div([
     html.H1('HUT Dashboard'),
-    dcc.Tabs(id="tabs-example-graph", value='tab-1-example-graph', children=[
-        dcc.Tab(label='Routes', value='tab-1-example-graph'),
-        dcc.Tab(label='Families', value='tab-2-example-graph'),
-        dcc.Tab(label='Volunteers', value='tab-3-example-graph'),
+    dbc.Row([
+        dbc.Col([
+            html.H3('Selection Panel')
+        ], width = 2),
+        dbc.Col([
+            dbc.Tabs([
+                dbc.Tab(label='Routes', tab_id='tab-1'),
+                dbc.Tab(label='Families', tab_id='tab-2'),
+                dbc.Tab(label='Volunteers', tab_id='tab-3'),
+            ],
+            id = "tabs",
+            active_tab='tab-1',
+            ),
+            html.Div(id='tabs-content')
+        ], width = 10),
     ]),
-    html.Div(id='tabs-content-example-graph')
 ])
 
 # Callbacks
-@app.callback(Output('tabs-content-example-graph', 'children'),
-              Input('tabs-example-graph', 'value'))
+@app.callback(Output('tabs-content', 'children'),
+              Input('tabs', 'active_tab'))
 def render_content(tab):
-    if tab == 'tab-1-example-graph':
+    if tab == 'tab-1':
         return html.Div([
             html.H3('Tab content 1'),
-            dcc.Graph(
-                figure={
-                    'data': [{
-                        'x': [1, 2, 3],
-                        'y': [3, 1, 2],
-                        'type': 'bar'
-                    }]
-                }
-            )
+            dbc.Row([
+                dbc.Col([
+                    html.H3('Content 1'),
+                    dcc.Graph(
+                        figure={
+                            'data': [{
+                                'x': [1, 2, 3],
+                                'y': [3, 1, 2],
+                                'type': 'bar'
+                            }]
+                        }
+                    )
+                ]),
+                dbc.Col([
+                    html.H3('Content 2')
+                ])
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    html.H3('Content 3')
+                ]),
+                dbc.Col([
+                    html.H3('Content 4')
+                ])
+            ])
         ])
-    elif tab == 'tab-2-example-graph':
+    elif tab == 'tab-2':
         return html.Div([
             html.H3('Tab content 2'),
             dcc.Graph(
@@ -48,7 +76,7 @@ def render_content(tab):
                 }
             )
         ])
-    elif tab == 'tab-3-example-graph':
+    elif tab == 'tab-3':
         return html.Div([
             html.H3('Tab content 3'),
             dcc.Graph(
