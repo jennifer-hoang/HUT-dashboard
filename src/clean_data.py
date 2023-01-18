@@ -131,11 +131,11 @@ def clean_route(input_path, file_name, output_path):
 
     # Remove Start/Finish times exceeding 24 hours
     clean_data["Start_at"] = np.where(
-        clean_data["Start_at"].str[0:2].astype(
+        clean_data["Start_at"].str.split(':').str.get(0).astype(
             float) > 23, None, clean_data["Start_at"]
     )
     clean_data["Finish_by"] = np.where(
-        clean_data["Finish_by"].str[0:2].astype(
+        clean_data["Finish_by"].str.split(':').str.get(0).astype(
             float) > 23, None, clean_data["Finish_by"]
     )
 
@@ -156,11 +156,20 @@ def clean_route(input_path, file_name, output_path):
 
 def main(opt):
     raw_files = get_file_names(opt['<input_path>'])
+    output_files = []
+    error_files = []
 
     for file_name in raw_files:
-        clean_route(opt['<input_path>'], file_name, opt['<output_path>'])
+        print(file_name)
+        try:
+            clean_route(opt['<input_path>'], file_name, opt['<output_path>'])
+            output_files.append(file_name)
+        except Exception as e:
+            print(e)
+            error_files.append(file_name)
 
-    print(f"{len(raw_files)} file(s) created in: {opt['<output_path>']}")
+    print(f"{len(output_files)} file(s) created in: {opt['<output_path>']}")
+    print(f"Something went wrong in {len(error_files)} file(s): {error_files}")
 
 
 if __name__ == "__main__":
