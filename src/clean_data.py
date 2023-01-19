@@ -34,7 +34,7 @@ def get_file_names(input_path):
     """
     file_list = []
     for file_name in os.listdir(input_path):
-        if 'solution' in file_name.lower():
+        if 'solution' in file_name.lower() and '.csv' in file_name:
             file_list.append(file_name)
     return file_list
 
@@ -169,7 +169,8 @@ def main(opt):
             error_files.append(file_name)
 
     print(f"{len(output_files)} file(s) created in: {opt['<output_path>']}")
-    print(f"Something went wrong in {len(error_files)} file(s): {error_files}")
+    if len(error_files):
+        print(f"Something went wrong in {len(error_files)} file(s): {error_files}")
 
 
 if __name__ == "__main__":
