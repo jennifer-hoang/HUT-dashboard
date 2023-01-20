@@ -151,7 +151,7 @@ def clean_route(input_path, file_name, output_path):
     ].diff() / pd.Timedelta(minutes=1)
 
     # Write to CSV
-    clean_data.to_csv(os.path.join(output_path, "Clean_" + file_name))
+    clean_data.to_csv(os.path.join(output_path, "Clean_" + file_name), index=False)
 
 
 def main(opt):
