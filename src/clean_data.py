@@ -79,13 +79,27 @@ def clean_route(input_path, file_name, output_path):
     clean_data = raw_data[cols].copy()
     clean_data.columns = col_names
 
-    # Create new address variables
-    clean_data["FSA"] = clean_data["Address"].str.extract(
-        r"([ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z])"
+    # Extract FSA from Address
+    clean_data["FSA"] = (clean_data["Address"]
+        .str.extract(
+            r"([ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z])",
+            flags = re.IGNORECASE,
+            expand = False
+        )
+        .str.upper()
     )
 
-    clean_data["Postal_Code"] = clean_data["Address"].str.extract(
-        r"([ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d)"
+    # Extract Postal Code from Address
+    clean_data["Postal_Code"] = (clean_data["Address"]
+        .str.extract(
+            r"([ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d)",
+            flags = re.IGNORECASE,
+            expand = False
+        )
+        .str.upper()
+        .str.replace("\W", '', regex = True)
+        .str.split(r"([ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z])")
+        .str.join(' ')
     )
 
     # Create binarized Stop Completion variable
