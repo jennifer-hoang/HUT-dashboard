@@ -1,6 +1,6 @@
 # File name: clean_data.py
 # Author: Jennifer Hoang
-# Date: 2023-01-18
+# Date Modified: 2023-01-24
 
 """This script cleans Routific solution files for the HUT database and dashboard.
 
@@ -157,12 +157,26 @@ def clean_route(input_path, file_name, output_path):
     clean_data["Start_at"] = pd.to_datetime(clean_data["Dispatch_Date"]).dt.tz_localize(
         "US/Eastern"
     ) + pd.to_timedelta(clean_data["Start_at"] + ":00")
+    
     clean_data["Finish_by"] = pd.to_datetime(clean_data["Dispatch_Date"]).dt.tz_localize(
         "US/Eastern"
     ) + pd.to_timedelta(clean_data["Finish_by"] + ":00")
+    
     clean_data["Duration_mins"] = clean_data.groupby("Driver_Name")[
         "Start_at"
     ].diff() / pd.Timedelta(minutes=1)
+
+    # Clean Driver and Visit names
+    clean_data['Driver_Name'] = (clean_data['Driver_Name']
+        .str.title()
+        .str.replace(r'\(Route .+\)', '', regex=True)
+        .str.strip()
+    )
+
+    clean_data['Visit_Name'] = (clean_data['Visit_Name']
+        .str.title()
+        .str.strip()
+    )
 
     # Write to CSV
     clean_data.to_csv(os.path.join(output_path, "Clean_" + file_name), index=False)
