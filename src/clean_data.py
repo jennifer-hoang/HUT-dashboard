@@ -170,11 +170,13 @@ def clean_route(input_path, file_name, output_path):
     clean_data['Driver_Name'] = (clean_data['Driver_Name']
         .str.title()
         .str.replace(r'\(Route .+\)', '', regex=True)
+        .str.replace(r'\s{2,}', ' ', regex=True)
         .str.strip()
     )
 
     clean_data['Visit_Name'] = (clean_data['Visit_Name']
         .str.title()
+        .str.replace(r'\s{2,}', ' ', regex=True)
         .str.strip()
     )
 
