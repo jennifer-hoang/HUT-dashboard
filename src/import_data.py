@@ -12,6 +12,7 @@ input_path      Path to data folder containing CSVs to upload (e.g. "data/clean"
 
 from docopt import docopt
 from google.cloud import bigquery
+import os.path
 import glob
 
 opt = docopt(__doc__)
@@ -34,7 +35,7 @@ def main(opt):
 
     # Get all CSV files located in file_path
     file_path = opt['<input_path>']
-    csv_files = glob.glob(file_path + '*.csv')
+    csv_files = glob.glob(os.path.join(file_path, '*.csv'))
 
     for file in csv_files:
         # Load file to table
@@ -46,10 +47,10 @@ def main(opt):
 
     table = client.get_table(table_id)  # Make an API request.
     print(
-        "Loaded {} rows and {} columns to {}".format(
-            table.num_rows, len(table.schema), table_id
-        )
+        "Loaded {} files and {} rows to".format(
+            job.input_files, job.output_rows), table_id
     )
+
 
 
 if __name__ == "__main__":
