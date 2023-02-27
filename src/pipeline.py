@@ -18,5 +18,4 @@ if __name__ == "__main__":
     arguments = docopt(__doc__)
     
     subprocess.run(['python', 'src/clean_data.py', arguments['<input_path>'], arguments['<output_path>']])
-    subprocess.run(['python', 'src/import_data.py', arguments['<output_path>'])
-
+    subprocess.run(['python', 'src/import_data.py', arguments['<output_path>']])
